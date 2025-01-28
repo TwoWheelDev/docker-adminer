@@ -1,4 +1,4 @@
-FROM php:7.4-fpm-alpine
+FROM php:8-fpm-alpine
 
 RUN	echo "upload_max_filesize = 128M" >> /usr/local/etc/php/conf.d/0-upload_large_dumps.ini \
 &&	echo "post_max_size = 128M" >> /usr/local/etc/php/conf.d/0-upload_large_dumps.ini \
@@ -36,15 +36,15 @@ RUN	set -x \
 
 COPY	*.php /var/www/html/
 
-ENV	ADMINER_VERSION 4.8.1
-ENV	ADMINER_DOWNLOAD_SHA256 2fd7e6d8f987b243ab1839249551f62adce19704c47d3d0c8dd9e57ea5b9c6b3
-ENV	ADMINER_COMMIT 1f173e18bdf0be29182e0d67989df56eadea4754
+ENV	ADMINER_VERSION 4.13
+ENV	ADMINER_DOWNLOAD_SHA256 8c8cf581ccb3b408f7d573506cc80124356dd8c912d2badd16ff03da5e03e130
+ENV	ADMINER_COMMIT c6bb5b80a815bf90bb2e01bdc7b8451ee9eff651
 
 RUN	set -x \
 &&	apk add --no-cache --virtual .build-deps git \
-&&	curl -fsSL "https://github.com/vrana/adminer/releases/download/v$ADMINER_VERSION/adminer-$ADMINER_VERSION.php" -o adminer.php \
+&&	curl -fsSL "https://github.com/pematon/adminer/releases/download/v$ADMINER_VERSION/adminer-$ADMINER_VERSION.php" -o adminer.php \
 &&	echo "$ADMINER_DOWNLOAD_SHA256  adminer.php" |sha256sum -c - \
-&&	git clone --recurse-submodules=designs --depth 1 --shallow-submodules --branch "v$ADMINER_VERSION" https://github.com/vrana/adminer.git /tmp/adminer \
+&&	git clone --recurse-submodules=designs --depth 1 --shallow-submodules --branch "v$ADMINER_VERSION" https://github.com/pematon/adminer.git /tmp/adminer \
 &&	commit="$(git -C /tmp/adminer/ rev-parse HEAD)" \
 &&	[ "$commit" = "$ADMINER_COMMIT" ] \
 &&	cp -r /tmp/adminer/designs/ /tmp/adminer/plugins/ . \
